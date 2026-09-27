@@ -10,6 +10,11 @@ export const tilesWide = [
   T("12%", 300, 62, "-5deg", "12.5s", "2s", "x"),
   T("20%", 540, 48, "4deg", "11.5s", "1s", "snapchat"),
 ];
+// Phones: small tiles tucked into the corners above the headline so they never cover text or buttons.
+export const tilesMobile = [
+  T("5%", 84, 34, "-6deg", "11s", "0s", "instagram"),
+  T("calc(95% - 34px)", 92, 30, "5deg", "12s", "1.4s", "tiktok"),
+];
 export const tilesNarrow = [
   T("3%", 470, 36, "-6deg", "11s", "0s", "instagram"),
   T("calc(97% - 36px)", 450, 36, "5deg", "12s", "1.4s", "youtube"),

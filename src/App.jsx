@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { s, X, Logo } from "./ui.jsx";
 import JoinModal from "./JoinModal.jsx";
 import {
-  tabNames, tilesWide, tilesNarrow, infl, posts, kpis, camps, sideFor, platforms, features, audiences, plans, faqData,
+  tabNames, tilesWide, tilesNarrow, tilesMobile, infl, posts, kpis, camps, sideFor, platforms, features, audiences, plans, faqData,
   chartPath, line2, line3, areaPath, legend, icSearch, icBell, icTik,
 } from "./data.jsx";
 
@@ -85,7 +85,14 @@ export default function App() {
 
   const openJoin = (e) => { if (e) e.preventDefault(); setJoinOpen(true); };
   const wide = vw >= 1100;
-  const tiles = wide ? tilesWide : tilesNarrow;
+  const mobile = vw < 640;
+  const tiles = wide ? tilesWide : mobile ? tilesMobile : tilesNarrow;
+  // Below desktop width the dashboard mockup is rendered at a fixed virtual width and scaled
+  // down as a whole, so it keeps the desktop layout instead of squeezing its tables.
+  // On phones the sidebar is dropped so the content stays legible.
+  const dashW = mobile ? 900 : 1180;
+  const dashK = Math.min(1, (Math.min(vw, 1180 + 40) - 40) / dashW);
+  const dashH = mobile ? 540 : 600;
   const side = sideFor(tab);
   const navBg = scrolled ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.28)";
   const navShadow = scrolled ? "0 8px 24px rgba(22,21,31,0.06)" : "0 2px 10px rgba(22,21,31,0.03)";
@@ -108,7 +115,7 @@ export default function App() {
         </nav>
       </header>
 
-      <section id="top" dir="rtl" style={s("position: relative; overflow: hidden; padding: 150px 20px 0; background: linear-gradient(180deg, #ECE8FD 0%, #EFECFD 30%, #F3F1FE 55%, #F5F3FE 78%, #F8F8FB 96%);")}>
+      <section id="top" dir="rtl" style={s(`position: relative; overflow: hidden; padding: ${mobile ? 120 : 150}px 20px 0; background: linear-gradient(180deg, #ECE8FD 0%, #EFECFD 30%, #F3F1FE 55%, #F5F3FE 78%, #F8F8FB 96%);`)}>
         <div aria-hidden="true" style={s("position: absolute; inset: 0; pointer-events: none; overflow: hidden;")}>
           <div style={s("position: absolute; top: 60px; left: -8%; width: 60%; height: 220px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,255,255,0.55), rgba(255,255,255,0)); filter: blur(16px); animation: fmDrift 26s ease-in-out infinite;")}></div>
           <div style={s("position: absolute; top: 20px; right: -10%; width: 55%; height: 180px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,255,255,0.55), rgba(255,255,255,0)); filter: blur(16px); animation: fmDrift 32s ease-in-out infinite reverse;")}></div>
@@ -124,7 +131,7 @@ export default function App() {
         </div>
 
         <div style={s("position: relative; z-index: 3; max-width: 820px; margin: 0 auto; text-align: center;")}>
-          <h1 style={s("margin: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; letter-spacing: -0.01em; font-size: clamp(38px, 5vw, 66px); line-height: 1.2; font-weight: 600; color: #16151F; text-wrap: balance; animation: fmIn 0.8s both;")}>أدر حملات المؤثرين<br />لعملائك من <span style={s("color: #3B0CEB;")}>مكان واحد</span></h1>
+          <h1 style={s(`margin: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; letter-spacing: -0.01em; font-size: clamp(${mobile ? 31 : 38}px, 5vw, 66px); line-height: 1.2; font-weight: 600; color: #16151F; text-wrap: balance; animation: fmIn 0.8s both;`)}>أدر حملات المؤثرين<br />لعملائك من <span style={s("color: #3B0CEB;")}>مكان واحد</span></h1>
           <p style={s("margin: 22px auto 0; max-width: 560px; font-size: clamp(16px, 1.5vw, 19px); line-height: 1.75; font-weight: 400; color: #72717F; text-wrap: pretty; animation: fmIn 0.8s 0.1s both;")}>نظّم بيانات المؤثرين وملفات الموافقة وتابع حالة النشر وجهّز تقارير كل عميل في لوحة واحدة بدل التنقّل بين الجداول والرسائل</p>
           <div style={s("margin-top: 32px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; animation: fmIn 0.8s 0.2s both;")}>
             <X as="a" href="#cta" onClick={openJoin} style="display: inline-flex; align-items: center; gap: 10px; font-size: 15.5px; font-weight: 600; color: #ffffff; background: #3B0CEB; border-radius: 999px; padding: 13px 26px; box-shadow: 0 1px 2px rgba(22,21,31,0.08); transition: transform 0.2s ease, background 0.2s ease;" hover="background: #2A0AA8; color: #ffffff; transform: translateY(0);">ابدأ مجانًا</X>
@@ -143,9 +150,9 @@ export default function App() {
         </div>
 
         <div ref={dash} style={s("position: relative; z-index: 3; max-width: 1180px; margin: 34px auto 0; perspective: 1600px;")}>
-          <div style={s(`height: 600px; overflow: hidden; border-radius: 22px 22px 0 0; transform: rotateX(${tilt.toFixed(2)}deg); transform-origin: 50% 0%; transition: transform 0.2s linear; will-change: transform; -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent); mask-image: linear-gradient(to bottom, #000 78%, transparent);`)}>
-            <div style={s("background: #ffffff; border: 1px solid #E4E3EC; border-radius: 22px 22px 0 0; box-shadow: 0 20px 50px rgba(22,21,31,0.07); display: grid; grid-template-columns: 230px minmax(0, 1fr); min-height: 640px; overflow: hidden;")}>
-              <aside style={s("border-inline-end: 1px solid #E4E3EC; background: #F8F8FB; padding: 16px 14px; display: flex; flex-direction: column; gap: 4px;")}>
+          <div style={s(`height: ${Math.round(dashH * dashK)}px; overflow: hidden; border-radius: ${Math.round(22 * dashK)}px ${Math.round(22 * dashK)}px 0 0; transform: rotateX(${tilt.toFixed(2)}deg); transform-origin: 50% 0%; transition: transform 0.2s linear; will-change: transform; -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent); mask-image: linear-gradient(to bottom, #000 78%, transparent);`)}>
+            <div style={s(`background: #ffffff; border: 1px solid #E4E3EC; border-radius: 22px 22px 0 0; box-shadow: 0 20px 50px rgba(22,21,31,0.07); display: grid; grid-template-columns: ${mobile ? "minmax(0, 1fr)" : "230px minmax(0, 1fr)"}; min-height: 640px; overflow: hidden; width: ${dashW}px; box-sizing: border-box; transform: scale(${dashK}); transform-origin: top right;`)}>
+              {!mobile && <aside style={s("border-inline-end: 1px solid #E4E3EC; background: #F8F8FB; padding: 16px 14px; display: flex; flex-direction: column; gap: 4px;")}>
                 <div style={s("display: flex; align-items: center; padding: 6px 6px 2px;")}><Logo width={22} height={23} label="مُدار" /></div>
                 <div style={s("margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px; background: #ffffff; border: 1px solid #E4E3EC; border-radius: 11px; box-shadow: 0 1px 2px rgba(22,21,31,0.04);")}><span style={s("display: flex; align-items: center; gap: 9px; min-width: 0;")}><span style={s("flex: none; width: 28px; height: 28px; border-radius: 8px; background: #16151F; color: #ffffff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center;")}>س</span><span style={s("min-width: 0;")}><span style={s("display: block; font-size: 12.5px; font-weight: 600;")}>وكالة سهم</span><span style={s("display: block; font-size: 10.5px; color: #A4A3B1;")}>خطة ستوديو</span></span></span><span style={s("color: #A4A3B1; font-size: 12px;")}>⇅</span></div>
                 {side.map((g, gi) => (
@@ -157,7 +164,7 @@ export default function App() {
                   </div>
                 ))}
                 <div style={s("margin-top: auto; display: flex; align-items: center; gap: 9px; padding: 12px 6px 4px; border-top: 1px solid #E4E3EC;")}><img src="https://images.unsplash.com/photo-1667514044945-bcbb6a8e1919?w=96&h=96&fit=crop&crop=faces&auto=format" alt="" style={s("flex: none; width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: #ECE8FD;")} /><div style={s("min-width: 0; flex: 1;")}><div style={s("font-size: 12px; font-weight: 600;")}>ريم العتيبي</div><div style={s("font-size: 10.5px; color: #A4A3B1;")}>مديرة الحملات</div></div><span style={s("color: #A4A3B1; font-size: 14px; line-height: 1;")}>⋯</span></div>
-              </aside>
+              </aside>}
               <div style={s("min-width: 0;")}>
                 <div style={s("display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 24px; border-bottom: 1px solid #EDECF3;")}>
                   <div style={s("font-size: 12px; color: #878696; display: flex; gap: 6px;")}><span>وكالة سهم</span><span style={s("color: #D4D3DE;")}>/</span><span style={s("color: #16151F; font-weight: 600;")}>{tabNames[tab]}</span></div>
@@ -248,7 +255,7 @@ export default function App() {
         </div>
       </section>
 
-      <section id="features" dir="rtl" style={s("padding: clamp(90px, 10vw, 130px) 20px clamp(90px, 10vw, 130px);")}>
+      <section id="features" dir="rtl" style={s("padding: clamp(64px, 10vw, 130px) 20px clamp(64px, 10vw, 130px);")}>
         <div style={s("max-width: 1180px; margin: 0 auto;")}>
           <div data-reveal="1" style={s("text-align: center; max-width: 720px; margin: 0 auto;")}>
             <h2 style={s("margin: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; letter-spacing: -0.01em; font-size: clamp(30px, 3.4vw, 48px); line-height: 1.25; font-weight: 600; color: #16151F; text-wrap: balance;")}>شغّل عمليات حملاتك كلها<br />من لوحة واحدة</h2>
@@ -257,7 +264,7 @@ export default function App() {
           <div style={s("margin-top: 60px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px;")}>
             {features.map((f) => (
               <X key={f.title} data-reveal="1" style="background: #ffffff; border: 1px solid #E4E3EC; border-radius: 22px; padding: 14px; display: flex; flex-direction: column; transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.45s ease;" hover="transform: translateY(-2px); box-shadow: 0 10px 28px rgba(22,21,31,0.05);">
-                <div style={s("height: 220px; background: #F2F1F7; border-radius: 18px; display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; overflow: hidden;")}>
+                <div style={s(`height: ${mobile ? 180 : 220}px; background: #F2F1F7; border-radius: 18px; display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; overflow: hidden;`)}>
                   <div style={s("width: 100%; max-width: 250px; zoom: 0.88; background: #ffffff; border: 1px solid #E4E3EC; border-radius: 12px; box-shadow: 0 1px 2px rgba(22,21,31,0.04), 0 8px 24px rgba(22,21,31,0.05); padding: 12px 14px; box-sizing: border-box;")}>
                     {f.isInput && (
                       <>
@@ -291,7 +298,7 @@ export default function App() {
         </div>
       </section>
 
-      <section dir="rtl" style={s("border-top: 1px solid #E4E3EC; padding: clamp(90px, 10vw, 130px) 20px;")}>
+      <section dir="rtl" style={s("border-top: 1px solid #E4E3EC; padding: clamp(64px, 10vw, 130px) 20px;")}>
         <div style={s("max-width: 1180px; margin: 0 auto;")}>
           <div data-reveal="1" style={s("text-align: center; max-width: 760px; margin: 0 auto;")}>
             <h2 style={s("margin: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; letter-spacing: -0.01em; font-size: clamp(30px, 3.4vw, 48px); line-height: 1.25; font-weight: 600; color: #16151F;")}>مصمم لطريقة عملك الفعلية</h2>
@@ -309,7 +316,7 @@ export default function App() {
         </div>
       </section>
 
-      <section id="pricing" dir="rtl" style={s("border-top: 1px solid #E4E3EC; padding: clamp(90px, 10vw, 130px) 20px clamp(80px, 9vw, 110px);")}>
+      <section id="pricing" dir="rtl" style={s("border-top: 1px solid #E4E3EC; padding: clamp(64px, 10vw, 130px) 20px clamp(56px, 9vw, 110px);")}>
         <div style={s("max-width: 1180px; margin: 0 auto;")}>
           <div data-reveal="1" style={s("text-align: center;")}>
             <h2 style={s("margin: 0; font-family: 'IBM Plex Sans Arabic', sans-serif; letter-spacing: -0.01em; font-size: clamp(30px, 3.4vw, 48px); line-height: 1.25; font-weight: 600; color: #16151F;")}>باقات مُدار</h2>
@@ -357,7 +364,7 @@ export default function App() {
         </div>
       </section>
 
-      <section id="cta" dir="rtl" style={s("border-top: 1px solid #E4E3EC; padding: clamp(90px, 10vw, 140px) 20px;")}>
+      <section id="cta" dir="rtl" style={s("border-top: 1px solid #E4E3EC; padding: clamp(64px, 10vw, 140px) 20px;")}>
         <div data-reveal="1" style={s("position: relative; overflow: hidden; max-width: 960px; margin: 0 auto; border-radius: 26px; border: 1px solid #E4E3EC; padding: clamp(56px, 6vw, 84px) 24px; text-align: center; background: linear-gradient(160deg, #EEEBFB 0%, #ECE8FC 45%, #E9E4FC 100%);")}>
           <div aria-hidden="true" style={s("position: absolute; inset: 0; pointer-events: none;")}>
             <div style={s("position: absolute; bottom: -80px; left: -10%; width: 70%; height: 260px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,255,255,0.6), rgba(255,255,255,0)); filter: blur(16px); animation: fmDrift 24s ease-in-out infinite;")}></div>
