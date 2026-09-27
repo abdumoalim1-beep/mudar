@@ -1,7 +1,7 @@
 // Survey submissions are sent to Formspree (https://formspree.io):
 // each signup arrives by email and is listed in the Formspree dashboard (exportable to CSV).
 // Set FORMSPREE_ID to the form's ID (the part after /f/ in its endpoint URL).
-const FORMSPREE_ID = import.meta.env.VITE_FORMSPREE_ID || "";
+const FORMSPREE_ID = import.meta.env.VITE_FORMSPREE_ID || "xyeznarw";
 
 export async function submitLead(payload) {
   if (!FORMSPREE_ID) {
