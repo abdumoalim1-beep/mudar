@@ -3,6 +3,11 @@
 // Set FORMSPREE_ID to the form's ID (the part after /f/ in its endpoint URL).
 const FORMSPREE_ID = import.meta.env.VITE_FORMSPREE_ID || "xyeznarw";
 
+// e.g. "27 سبتمبر 2026 في 9:59 ص" (Asia/Riyadh, Gregorian calendar, Latin digits)
+function riyadhTime(iso) {
+  return new Date(iso).toLocaleString("ar-SA-u-nu-latn-ca-gregory", { timeZone: "Asia/Riyadh", dateStyle: "long", timeStyle: "short" });
+}
+
 export async function submitLead(payload) {
   if (!FORMSPREE_ID) {
     console.warn("[mudar] FORMSPREE_ID is not set; submission not stored", payload);
@@ -18,7 +23,7 @@ export async function submitLead(payload) {
         "عدد الحملات شهريًا": payload.campaigns,
         "عدد المؤثرين": payload.influencers,
         "قطاع الشركة": payload.sector,
-        "وقت التسجيل": payload.submittedAt,
+        "وقت التسجيل": riyadhTime(payload.submittedAt),
         _subject: "تسجيل جديد في مُدار",
       }),
     });
