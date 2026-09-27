@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { s, X, Logo } from "./ui.jsx";
 import JoinModal from "./JoinModal.jsx";
+import MobileDash from "./MobileDash.jsx";
 import {
   tabNames, tilesWide, tilesNarrow, tilesMobile, infl, posts, kpis, camps, sideFor, platforms, features, audiences, plans, faqData,
   chartPath, line2, line3, areaPath, legend, icSearch, icBell, icTik,
@@ -87,12 +88,12 @@ export default function App() {
   const wide = vw >= 1100;
   const mobile = vw < 640;
   const tiles = wide ? tilesWide : mobile ? tilesMobile : tilesNarrow;
-  // Below desktop width the dashboard mockup is rendered at a fixed virtual width and scaled
-  // down as a whole, so it keeps the desktop layout instead of squeezing its tables.
-  // On phones the sidebar is dropped so the content stays legible.
-  const dashW = mobile ? 900 : 1180;
+  // Between phone and desktop width the dashboard mockup is rendered at its desktop width and
+  // scaled down as a whole, so it keeps its layout instead of squeezing its tables.
+  // Phones get their own layout (MobileDash).
+  const dashW = 1180;
   const dashK = Math.min(1, (Math.min(vw, 1180 + 40) - 40) / dashW);
-  const dashH = mobile ? 540 : 600;
+  const dashH = 600;
   const side = sideFor(tab);
   const navBg = scrolled ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.28)";
   const navShadow = scrolled ? "0 8px 24px rgba(22,21,31,0.06)" : "0 2px 10px rgba(22,21,31,0.03)";
@@ -150,9 +151,10 @@ export default function App() {
         </div>
 
         <div ref={dash} style={s("position: relative; z-index: 3; max-width: 1180px; margin: 34px auto 0; perspective: 1600px;")}>
+          {mobile ? <MobileDash tab={tab} tilt={tilt} /> : (
           <div style={s(`height: ${Math.round(dashH * dashK)}px; overflow: hidden; border-radius: ${Math.round(22 * dashK)}px ${Math.round(22 * dashK)}px 0 0; transform: rotateX(${tilt.toFixed(2)}deg); transform-origin: 50% 0%; transition: transform 0.2s linear; will-change: transform; -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent); mask-image: linear-gradient(to bottom, #000 78%, transparent);`)}>
-            <div style={s(`background: #ffffff; border: 1px solid #E4E3EC; border-radius: 22px 22px 0 0; box-shadow: 0 20px 50px rgba(22,21,31,0.07); display: grid; grid-template-columns: ${mobile ? "minmax(0, 1fr)" : "230px minmax(0, 1fr)"}; min-height: 640px; overflow: hidden; width: ${dashW}px; box-sizing: border-box; transform: scale(${dashK}); transform-origin: top right;`)}>
-              {!mobile && <aside style={s("border-inline-end: 1px solid #E4E3EC; background: #F8F8FB; padding: 16px 14px; display: flex; flex-direction: column; gap: 4px;")}>
+            <div style={s(`background: #ffffff; border: 1px solid #E4E3EC; border-radius: 22px 22px 0 0; box-shadow: 0 20px 50px rgba(22,21,31,0.07); display: grid; grid-template-columns: 230px minmax(0, 1fr); min-height: 640px; overflow: hidden; width: ${dashW}px; box-sizing: border-box; transform: scale(${dashK}); transform-origin: top right;`)}>
+              <aside style={s("border-inline-end: 1px solid #E4E3EC; background: #F8F8FB; padding: 16px 14px; display: flex; flex-direction: column; gap: 4px;")}>
                 <div style={s("display: flex; align-items: center; padding: 6px 6px 2px;")}><Logo width={22} height={23} label="مُدار" /></div>
                 <div style={s("margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px; background: #ffffff; border: 1px solid #E4E3EC; border-radius: 11px; box-shadow: 0 1px 2px rgba(22,21,31,0.04);")}><span style={s("display: flex; align-items: center; gap: 9px; min-width: 0;")}><span style={s("flex: none; width: 28px; height: 28px; border-radius: 8px; background: #16151F; color: #ffffff; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center;")}>س</span><span style={s("min-width: 0;")}><span style={s("display: block; font-size: 12.5px; font-weight: 600;")}>وكالة سهم</span><span style={s("display: block; font-size: 10.5px; color: #A4A3B1;")}>خطة ستوديو</span></span></span><span style={s("color: #A4A3B1; font-size: 12px;")}>⇅</span></div>
                 {side.map((g, gi) => (
@@ -164,7 +166,7 @@ export default function App() {
                   </div>
                 ))}
                 <div style={s("margin-top: auto; display: flex; align-items: center; gap: 9px; padding: 12px 6px 4px; border-top: 1px solid #E4E3EC;")}><img src="https://images.unsplash.com/photo-1667514044945-bcbb6a8e1919?w=96&h=96&fit=crop&crop=faces&auto=format" alt="" style={s("flex: none; width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: #ECE8FD;")} /><div style={s("min-width: 0; flex: 1;")}><div style={s("font-size: 12px; font-weight: 600;")}>ريم العتيبي</div><div style={s("font-size: 10.5px; color: #A4A3B1;")}>مديرة الحملات</div></div><span style={s("color: #A4A3B1; font-size: 14px; line-height: 1;")}>⋯</span></div>
-              </aside>}
+              </aside>
               <div style={s("min-width: 0;")}>
                 <div style={s("display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 24px; border-bottom: 1px solid #EDECF3;")}>
                   <div style={s("font-size: 12px; color: #878696; display: flex; gap: 6px;")}><span>وكالة سهم</span><span style={s("color: #D4D3DE;")}>/</span><span style={s("color: #16151F; font-weight: 600;")}>{tabNames[tab]}</span></div>
@@ -242,7 +244,7 @@ export default function App() {
                 </div>
               </div>
             </div>
-          </div>
+          </div>)}
         </div>
       </section>
 
