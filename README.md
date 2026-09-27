@@ -14,7 +14,7 @@ npm run build    # يُخرج الموقع في dist/
 
 - `src/App.jsx` — الصفحة كاملة (الهيدر، الهيرو، المزايا، الباقات، الأسئلة، الفوتر)
 - `src/JoinModal.jsx` — استبيان «انضم مجانًا» (نوع الجهة، عدد الحملات، عدد المؤثرين، القطاع، البريد)
-- `src/lead.js` — `submitLead()` نقطة ربط تخزين بيانات الاستبيان (غير مربوطة حاليًا)
+- `src/lead.js` — يرسل بيانات الاستبيان إلى Formspree (يتطلب متغير البيئة `VITE_FORMSPREE_ID`)
 - `src/data.jsx` — محتوى الصفحة والبيانات التجريبية للوحة
 - `src/ui.jsx` — أدوات مساعدة (الأيقونات، الشعار، أنماط hover)
 
@@ -24,5 +24,5 @@ npm run build    # يُخرج الموقع في dist/
 
 ## النشر على GitHub Pages
 
-الملف `.github/workflows/deploy.yml` ينشر الموقع تلقائيًا عند الدفع إلى فرع `main`.
+
 فعّل مرة واحدة من: **Settings → Pages → Source: GitHub Actions**.
